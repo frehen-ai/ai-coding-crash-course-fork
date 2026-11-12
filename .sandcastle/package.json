@@ -1,0 +1,17 @@
+{
+  "name": "sandcastle-loop",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "loop": "cd .. && tsx .sandcastle/loop.ts",
+    "smoke": "cd .. && tsx .sandcastle/smoke.ts",
+    "drill": "cd .. && tsx .sandcastle/drill.ts",
+    "typecheck": "tsc -p ."
+  },
+  "devDependencies": {
+    "@ai-hero/sandcastle": "0.14.0",
+    "@types/node": "^24.10.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.2"
+  }
+}

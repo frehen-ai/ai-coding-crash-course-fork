@@ -1,13 +1,15 @@
 import { spawn, execFileSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
+import { mkdirSync } from "node:fs";
 import { createIsolatedSandboxProvider } from "@ai-hero/sandcastle";
 
 const PLACEHOLDER = "sbx-gh-placeholder";
+const WORKSPACE = "/home/agent/workspace";
 
-const sbx = (args: string[], input?: string) =>
+const sbx = (args: string[], input = "") =>
   execFileSync("sbx", args, { encoding: "utf8", input, stdio: ["pipe", "pipe", "pipe"] }).trim();
 
-// Every run() gets a fresh sbx microVM with NO host mount: Sandcastle copies the repo in
+// Every create() gets a fresh sbx microVM with NO host mount: Sandcastle copies the repo in
 // as a git bundle and brings commits back as patches. The VM has its own dockerd, so
 // Testcontainers works without the Mac's Docker socket.
 export function sbxIsolated(options: {
@@ -15,6 +17,8 @@ export function sbxIsolated(options: {
   name: string; // sandbox name prefix, e.g. "loop-crash-fork"
   ghKeychainItem: string; // Keychain item holding the fine-grained PAT
   env?: Record<string, string>;
+  // Drill only: import this credential instead of a fresh export; null = import nothing.
+  copilotAuth?: string | null;
 }) {
   return createIsolatedSandboxProvider({
     name: "sbx-isolated",
@@ -26,7 +30,7 @@ export function sbxIsolated(options: {
         if (key in env) throw new Error(`sbxIsolated: ${key} must not be set; run without with-secrets.sh`);
       }
 
-      // Unique per run(), so the loop and an interactive session never collide.
+      // Unique per create(), so the loop and an interactive session never collide.
       const name = `${options.name}-${randomUUID().slice(0, 8)}`;
 
       // Remove the VM (and with it the sandbox-scoped secret) on any exit, Ctrl-C included.
@@ -55,11 +59,14 @@ export function sbxIsolated(options: {
       ]);
 
       // Copilot: a fresh export from the host's opencode.db, piped in over stdin.
-      const copilot = execFileSync("opencode", ["auth", "export", "github-copilot"], { encoding: "utf8" });
-      sbx(["exec", "-i", name, "opencode", "auth", "import", "--standalone"], copilot);
+      const copilot =
+        options.copilotAuth === undefined
+          ? execFileSync("opencode", ["auth", "export", "github-copilot"], { encoding: "utf8" })
+          : options.copilotAuth;
+      if (copilot !== null) sbx(["exec", "-i", name, "opencode", "auth", "import", "--standalone"], copilot);
 
       return {
-        worktreePath: "/home/agent/workspace",
+        worktreePath: WORKSPACE,
         sandboxId: name,
         exec: (command, opts = {}) =>
           new Promise((resolve, reject) => {
@@ -86,6 +93,13 @@ export function sbxIsolated(options: {
             child.on("error", reject);
             child.on("close", (code) => {
               if (partial) opts.onLine?.(partial);
+              // opencode --format json reports its fatal error on stdout ({"type":"error"}), and
+              // Sandcastle's AgentError shows only stderr. Copy the message over so it's visible.
+              if (code !== 0) {
+                for (const line of stdout.split("\n").filter((l) => l.includes('"type":"error"'))) {
+                  try { stderr += `\n${JSON.parse(line).error?.message ?? line}`; } catch {}
+                }
+              }
               resolve({ stdout, stderr, exitCode: code ?? 1 });
             });
             // sbx exec forwards stdin. Ending it is the provider's "</dev/null":
@@ -107,4 +121,22 @@ export function sbxIsolated(options: {
       };
     },
   });
+}
+
+// A failed run() syncs nothing to the host, but the VM still has the work until close().
+// Call this BEFORE close(): it stops the agent, commits any uncommitted work as one WIP
+// commit, and fetches everything since `base` into the host ref `ref`.
+// Returns how many commits were saved (0 = nothing to save).
+export function salvage(sandboxId: string, base: string, ref: string): number {
+  const vm = (command: string) => sbx(["exec", "-w", WORKSPACE, sandboxId, "sh", "-c", command]);
+  // The agent may still be running: Sandcastle stops waiting on a timeout, it doesn't kill it.
+  vm("pkill -f 'opencode [r]un'; sleep 1; git add -A && git -c commit.gpgsign=false commit -qm 'WIP: salvaged after a failed run' || true");
+  const count = Number(vm(`git rev-list --count ${base}..HEAD`));
+  if (!count) return 0;
+  vm(`git bundle create -q /tmp/salvage.bundle HEAD ^${base}`);
+  mkdirSync(".sandcastle/salvage", { recursive: true });
+  const file = `.sandcastle/salvage/${ref.split("/").pop()}.bundle`;
+  sbx(["cp", `${sandboxId}:/tmp/salvage.bundle`, file]);
+  execFileSync("git", ["fetch", "-q", file, `+HEAD:${ref}`]);
+  return count;
 }
