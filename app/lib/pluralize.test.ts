@@ -22,3 +22,21 @@ describe("pluralize", () => {
     expect(pluralize(1, "person", "people")).toBe("1 person");
   });
 });
+
+describe("pluralize thousands separators", () => {
+  it("leaves counts below 1,000 unseparated", () => {
+    expect(pluralize(999, "lesson")).toBe("999 lessons");
+  });
+
+  it("separates a count of 1,000", () => {
+    expect(pluralize(1000, "lesson")).toBe("1,000 lessons");
+  });
+
+  it("separates counts with a custom plural", () => {
+    expect(pluralize(1234, "person", "people")).toBe("1,234 people");
+  });
+
+  it("separates every group of thousands", () => {
+    expect(pluralize(1234567, "lesson")).toBe("1,234,567 lessons");
+  });
+});
