@@ -245,7 +245,7 @@ describe("categoryService", () => {
 
     it("throws when category has courses", () => {
       expect(() => deleteCategory(base.category.id)).toThrow(
-        "Cannot delete: 1 course use this category."
+        "Cannot delete: 1 course uses this category."
       );
     });
 

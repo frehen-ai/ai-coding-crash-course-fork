@@ -30,12 +30,6 @@ const LEADING_PLURAL_NOUN = new RegExp(
   "i"
 );
 
-// Files that still hand-roll count labels. Remove entries as files migrate
-// to `pluralize`; delete this mechanism once the list is empty.
-const KNOWN_EXCEPTIONS: string[] = [
-  "app/services/categoryService.ts",
-];
-
 type Violation = { line: number; text: string; pattern: string };
 
 function unwrap(expression: ts.Expression): ts.Expression {
@@ -304,25 +298,13 @@ describe("findCountLabelViolations", () => {
 describe("count label guard", () => {
   const violationsByFile = scanApp();
 
-  it("finds no hand-rolled count labels outside the known exceptions", () => {
-    const report = [...violationsByFile]
-      .filter(([file]) => !KNOWN_EXCEPTIONS.includes(file))
-      .flatMap(([file, violations]) =>
-        violations.map((v) => `  ${file}:${v.line}  ${v.text}  (${v.pattern})`)
-      );
+  it("finds no hand-rolled count labels", () => {
+    const report = [...violationsByFile].flatMap(([file, violations]) =>
+      violations.map((v) => `  ${file}:${v.line}  ${v.text}  (${v.pattern})`)
+    );
     expect(
       report,
       `Hand-rolled count labels found. Use pluralize from ~/lib/pluralize instead:\n${report.join("\n")}\n`
-    ).toEqual([]);
-  });
-
-  it("lists only files that still violate", () => {
-    const stale = KNOWN_EXCEPTIONS.filter(
-      (file) => !violationsByFile.has(file)
-    );
-    expect(
-      stale,
-      `These files no longer hand-roll count labels. Remove them from KNOWN_EXCEPTIONS in app/lib/count-labels.test.ts:\n${stale.join("\n")}\n`
     ).toEqual([]);
   });
 });
