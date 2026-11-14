@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Star } from "lucide-react";
 import { cn } from "~/lib/utils";
 import { MAX_RATING } from "~/lib/ratings";
+import { pluralize } from "~/lib/pluralize";
 
 const STARS = Array.from({ length: MAX_RATING }, (_, i) => i + 1);
 
@@ -35,9 +36,10 @@ export function StarRating({
   return (
     <span
       className={cn("flex items-center gap-1.5", className)}
-      aria-label={`Rated ${average} out of ${MAX_RATING} from ${count} ${
-        count === 1 ? "rating" : "ratings"
-      }`}
+      aria-label={`Rated ${average} out of ${MAX_RATING} from ${pluralize(
+        count,
+        "rating"
+      )}`}
     >
       <span className="flex items-center">
         {STARS.map((star) => {

@@ -9,6 +9,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 import { AlertTriangle, BookOpen, CheckCircle2, GraduationCap, PlayCircle } from "lucide-react";
 import { CourseImage } from "~/components/course-image";
 import { data, isRouteErrorResponse } from "react-router";
+import { pluralize } from "~/lib/pluralize";
 
 export function meta() {
   return [
@@ -164,8 +165,8 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                     <CardContent className="flex-1">
                       <div className="mb-2 flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">
-                          {course.completedLessons} / {course.totalLessons}{" "}
-                          lessons
+                          {course.completedLessons} /{" "}
+                          {pluralize(course.totalLessons, "lesson")}
                         </span>
                         <span className="font-medium">{course.progress}%</span>
                       </div>
@@ -237,7 +238,7 @@ export default function Dashboard({ loaderData }: Route.ComponentProps) {
                       <div className="flex items-center gap-2 text-sm text-green-600">
                         <CheckCircle2 className="size-4" />
                         <span>
-                          Completed — {course.totalLessons} lessons
+                          Completed — {pluralize(course.totalLessons, "lesson")}
                         </span>
                       </div>
                     </CardContent>

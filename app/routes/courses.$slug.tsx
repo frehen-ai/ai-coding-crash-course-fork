@@ -51,6 +51,7 @@ import {
 } from "~/services/courseRatingService";
 import { MAX_RATING, MIN_RATING } from "~/lib/ratings";
 import { StarRating, StarRatingInput } from "~/components/star-rating";
+import { pluralize } from "~/lib/pluralize";
 
 const ratingSchema = z.object({
   rating: z.coerce.number().int().min(MIN_RATING).max(MAX_RATING),
@@ -368,7 +369,7 @@ export default function CourseDetail({ loaderData }: Route.ComponentProps) {
           </span>
           <span className="flex items-center gap-1">
             <BookOpen className="size-4" />
-            {lessonCount} lessons
+            {pluralize(lessonCount, "lesson")}
           </span>
           {totalDuration > 0 && (
             <span className="flex items-center gap-1">
@@ -473,7 +474,7 @@ export default function CourseDetail({ loaderData }: Route.ComponentProps) {
               <div className="space-y-2 pt-2 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <BookOpen className="size-4" />
-                  <span>{lessonCount} lessons</span>
+                  <span>{pluralize(lessonCount, "lesson")}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="size-4" />
@@ -581,7 +582,7 @@ function CourseContent({
                   </Link>
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  {mod.lessons.length} lessons
+                  {pluralize(mod.lessons.length, "lesson")}
                 </p>
               </CardHeader>
               <CardContent>
