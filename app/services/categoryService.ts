@@ -1,6 +1,7 @@
 import { eq, sql } from "drizzle-orm";
 import { db } from "~/db";
 import { categories, courses } from "~/db/schema";
+import { pluralize } from "~/lib/pluralize";
 
 // ─── Category Service ───
 // Handles category CRUD, slug generation, and uniqueness validation.
@@ -103,7 +104,7 @@ export function deleteCategory(id: number) {
   const count = courseCount?.count ?? 0;
   if (count > 0) {
     throw new Error(
-      `Cannot delete: ${count} course${count === 1 ? "" : "s"} use this category.`
+      `Cannot delete: ${pluralize(count, "course uses", "courses use")} this category.`
     );
   }
 
