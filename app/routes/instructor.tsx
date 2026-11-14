@@ -3,6 +3,7 @@ import type { Route } from "./+types/instructor";
 import { getCoursesByInstructor, getLessonCountForCourse } from "~/services/courseService";
 import { getEnrollmentCountForCourse } from "~/services/enrollmentService";
 import { getCurrentUserId } from "~/lib/session";
+import { pluralize } from "~/lib/pluralize";
 import { getUserById } from "~/services/userService";
 import { Card, CardContent, CardFooter, CardHeader } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
@@ -193,15 +194,13 @@ export default function InstructorDashboard({
                   <div className="flex items-center gap-1.5">
                     <BookOpen className="size-4" />
                     <span>
-                      {course.lessonCount}{" "}
-                      {course.lessonCount === 1 ? "lesson" : "lessons"}
+                      {pluralize(course.lessonCount, "lesson")}
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <Users className="size-4" />
                     <span>
-                      {course.enrollmentCount}{" "}
-                      {course.enrollmentCount === 1 ? "student" : "students"}
+                      {pluralize(course.enrollmentCount, "student")}
                     </span>
                   </div>
                 </div>

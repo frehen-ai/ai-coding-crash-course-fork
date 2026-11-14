@@ -10,6 +10,7 @@ import {
   deleteCategory,
 } from "~/services/categoryService";
 import { getCurrentUserId } from "~/lib/session";
+import { pluralize } from "~/lib/pluralize";
 import { getUserById } from "~/services/userService";
 import { parseFormData } from "~/lib/validation";
 import { UserRole } from "~/db/schema";
@@ -432,7 +433,7 @@ export default function AdminCategories({ loaderData }: Route.ComponentProps) {
       <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
         <Tag className="size-4" />
         <span>
-          {categories.length} {categories.length === 1 ? "category" : "categories"} total
+          {pluralize(categories.length, "category", "categories")} total
         </span>
       </div>
 

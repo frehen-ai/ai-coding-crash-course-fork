@@ -5,6 +5,7 @@ import { z } from "zod";
 import type { Route } from "./+types/admin.users";
 import { getAllUsers, updateUser, updateUserRole } from "~/services/userService";
 import { getCurrentUserId } from "~/lib/session";
+import { pluralize } from "~/lib/pluralize";
 import { getUserById } from "~/services/userService";
 import { parseFormData } from "~/lib/validation";
 import { UserRole } from "~/db/schema";
@@ -371,7 +372,7 @@ export default function AdminUsers({ loaderData }: Route.ComponentProps) {
       <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
         <Users className="size-4" />
         <span>
-          {users.length} {users.length === 1 ? "user" : "users"} total
+          {pluralize(users.length, "user")} total
         </span>
       </div>
 

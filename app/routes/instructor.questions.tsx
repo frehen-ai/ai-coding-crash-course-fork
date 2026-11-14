@@ -22,6 +22,7 @@ import { UserAvatar } from "~/components/user-avatar";
 import { AlertTriangle, CheckCircle2, ExternalLink } from "lucide-react";
 import { cn, daysSince, formatRelativeTime } from "~/lib/utils";
 import { MAX_COMMENT_LENGTH } from "~/lib/comments";
+import { pluralize } from "~/lib/pluralize";
 import { parseFormData } from "~/lib/validation";
 
 // ─── Unanswered Questions Queue ───
@@ -148,7 +149,7 @@ function QuestionCard({ question }: { question: Question }) {
           >
             {waitingDays === 0
               ? "Waiting today"
-              : `Waiting ${waitingDays} day${waitingDays === 1 ? "" : "s"}`}
+              : `Waiting ${pluralize(waitingDays, "day")}`}
           </span>
         </div>
 

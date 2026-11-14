@@ -33,14 +33,6 @@ const LEADING_PLURAL_NOUN = new RegExp(
 // Files that still hand-roll count labels. Remove entries as files migrate
 // to `pluralize`; delete this mechanism once the list is empty.
 const KNOWN_EXCEPTIONS: string[] = [
-  "app/routes/admin.categories.tsx",
-  "app/routes/admin.courses.tsx",
-  "app/routes/admin.users.tsx",
-  "app/routes/instructor.$courseId.modules.$moduleId.tsx",
-  "app/routes/instructor.$courseId.students.tsx",
-  "app/routes/instructor.$courseId.tsx",
-  "app/routes/instructor.questions.tsx",
-  "app/routes/instructor.tsx",
   "app/services/categoryService.ts",
 ];
 
