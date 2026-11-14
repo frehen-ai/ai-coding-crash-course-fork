@@ -37,6 +37,7 @@ import { getEnrollmentCountForCourse, getCourseEnrolledStudents } from "~/servic
 import { calculateProgress } from "~/services/progressService";
 import { getQuizByLessonId, getBestAttempt } from "~/services/quizService";
 import { getCurrentUserId } from "~/lib/session";
+import { pluralize } from "~/lib/pluralize";
 import { getUserById } from "~/services/userService";
 import { CourseStatus, UserRole } from "~/db/schema";
 import { formatDuration, formatPrice } from "~/lib/utils";
@@ -1162,12 +1163,11 @@ export default function InstructorCourseEditor({
         <div className="mt-4 flex flex-wrap items-center gap-4 px-3 text-sm text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <BookOpen className="size-4" />
-            {lessonCount} {lessonCount === 1 ? "lesson" : "lessons"}
+            {pluralize(lessonCount, "lesson")}
           </span>
           <span className="flex items-center gap-1.5">
             <Users className="size-4" />
-            {enrollmentCount}{" "}
-            {enrollmentCount === 1 ? "student" : "students"}
+            {pluralize(enrollmentCount, "student")}
           </span>
           <span className="text-xs text-muted-foreground">
             Slug: /courses/{course.slug}
@@ -1249,10 +1249,7 @@ export default function InstructorCourseEditor({
                                         moduleId={mod.id}
                                       />
                                       <p className="mt-1 px-2 text-sm text-muted-foreground">
-                                        {mod.lessons.length}{" "}
-                                        {mod.lessons.length === 1
-                                          ? "lesson"
-                                          : "lessons"}
+                                        {pluralize(mod.lessons.length, "lesson")}
                                       </p>
                                     </div>
                                   </div>
@@ -1529,12 +1526,12 @@ export default function InstructorCourseEditor({
           <div className="mb-4 flex items-center gap-4 text-sm text-muted-foreground">
             <span className="flex items-center gap-1.5">
               <Users className="size-4" />
-              {students.length} {students.length === 1 ? "student" : "students"} enrolled
+              {pluralize(students.length, "student")} enrolled
             </span>
             {quizCount > 0 && (
               <span className="flex items-center gap-1.5">
                 <Award className="size-4" />
-                {quizCount} {quizCount === 1 ? "quiz" : "quizzes"}
+                {pluralize(quizCount, "quiz", "quizzes")}
               </span>
             )}
           </div>

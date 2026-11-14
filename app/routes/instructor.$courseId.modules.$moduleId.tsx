@@ -3,6 +3,7 @@ import type { Route } from "./+types/instructor.$courseId.modules.$moduleId";
 import { getCourseById, getCourseWithDetails } from "~/services/courseService";
 import { getModuleWithLessons } from "~/services/moduleService";
 import { getCurrentUserId } from "~/lib/session";
+import { pluralize } from "~/lib/pluralize";
 import { getUserById } from "~/services/userService";
 import { UserRole } from "~/db/schema";
 import { Card, CardContent } from "~/components/ui/card";
@@ -166,7 +167,7 @@ export default function InstructorModulePreview({
       <div className="mb-6 flex items-center gap-4 text-sm text-muted-foreground">
         <span className="flex items-center gap-1">
           <BookOpen className="size-4" />
-          {totalLessons} {totalLessons === 1 ? "lesson" : "lessons"}
+          {pluralize(totalLessons, "lesson")}
         </span>
         {totalDuration > 0 && (
           <span className="flex items-center gap-1">

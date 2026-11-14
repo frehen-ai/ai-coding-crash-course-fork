@@ -34,20 +34,12 @@ const LEADING_PLURAL_NOUN = new RegExp(
 // to `pluralize`; delete this mechanism once the list is empty.
 const KNOWN_EXCEPTIONS: string[] = [
   "app/components/star-rating.tsx",
-  "app/routes/admin.categories.tsx",
-  "app/routes/admin.courses.tsx",
-  "app/routes/admin.users.tsx",
   "app/routes/courses.$slug.$moduleId.tsx",
   "app/routes/courses.$slug.purchase.tsx",
   "app/routes/courses.$slug.tsx",
   "app/routes/courses.tsx",
   "app/routes/dashboard.tsx",
   "app/routes/home.tsx",
-  "app/routes/instructor.$courseId.modules.$moduleId.tsx",
-  "app/routes/instructor.$courseId.students.tsx",
-  "app/routes/instructor.$courseId.tsx",
-  "app/routes/instructor.questions.tsx",
-  "app/routes/instructor.tsx",
   "app/services/categoryService.ts",
 ];
 

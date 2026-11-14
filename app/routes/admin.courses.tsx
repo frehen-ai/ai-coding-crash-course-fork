@@ -10,6 +10,7 @@ import {
 } from "~/services/courseService";
 import { getEnrollmentCountForCourse } from "~/services/enrollmentService";
 import { getCurrentUserId } from "~/lib/session";
+import { pluralize } from "~/lib/pluralize";
 import { getUserById } from "~/services/userService";
 import { parseFormData } from "~/lib/validation";
 import { UserRole, CourseStatus } from "~/db/schema";
@@ -275,7 +276,7 @@ export default function AdminCourses({ loaderData }: Route.ComponentProps) {
       <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
         <BookOpen className="size-4" />
         <span>
-          {courses.length} {courses.length === 1 ? "course" : "courses"} total
+          {pluralize(courses.length, "course")} total
         </span>
       </div>
 

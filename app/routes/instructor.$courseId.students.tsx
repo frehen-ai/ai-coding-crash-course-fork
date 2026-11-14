@@ -6,6 +6,7 @@ import { getUserById } from "~/services/userService";
 import { calculateProgress } from "~/services/progressService";
 import { getQuizByLessonId, getBestAttempt } from "~/services/quizService";
 import { getCurrentUserId } from "~/lib/session";
+import { pluralize } from "~/lib/pluralize";
 import { UserRole } from "~/db/schema";
 import { Card, CardContent } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
@@ -202,13 +203,12 @@ export default function InstructorStudentRoster({
       <div className="mb-4 flex items-center gap-4 text-sm text-muted-foreground">
         <span className="flex items-center gap-1.5">
           <Users className="size-4" />
-          {students.length} {students.length === 1 ? "student" : "students"}{" "}
-          enrolled
+          {pluralize(students.length, "student")} enrolled
         </span>
         {quizCount > 0 && (
           <span className="flex items-center gap-1.5">
             <Award className="size-4" />
-            {quizCount} {quizCount === 1 ? "quiz" : "quizzes"}
+            {pluralize(quizCount, "quiz", "quizzes")}
           </span>
         )}
       </div>
