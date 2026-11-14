@@ -10,6 +10,15 @@ import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 import { Users, BookOpen, Copy, Check, AlertTriangle } from "lucide-react";
 import { data, isRouteErrorResponse } from "react-router";
+import { pluralize } from "~/lib/pluralize";
+
+// The summary styles the total and its noun separately, so split the
+// pluralized label rather than re-deriving either part.
+function splitSeatsLabel(totalSeats: number) {
+  const label = pluralize(totalSeats, "seat");
+  const space = label.indexOf(" ");
+  return { total: label.slice(0, space), noun: label.slice(space + 1) };
+}
 
 interface CourseStats {
   courseId: number;
@@ -189,11 +198,11 @@ export default function Team({ loaderData }: Route.ComponentProps) {
                       {stat.claimedSeats}
                       <span className="text-base font-normal text-muted-foreground">
                         {" "}
-                        / {stat.totalSeats}
+                        / {splitSeatsLabel(stat.totalSeats).total}
                       </span>
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      seats claimed
+                      {splitSeatsLabel(stat.totalSeats).noun} claimed
                     </p>
                   </div>
                   <Link to={`/courses/${stat.courseSlug}/purchase?mode=team`}>

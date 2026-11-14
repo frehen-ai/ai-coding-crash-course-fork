@@ -33,6 +33,7 @@ import { resolveCountry } from "~/lib/country.server";
 import { calculatePppPrice, getCountryTierInfo, COUNTRIES } from "~/lib/ppp";
 import { createPurchase, createTeamPurchase } from "~/services/purchaseService";
 import { parseFormData, parseParams } from "~/lib/validation";
+import { pluralize } from "~/lib/pluralize";
 
 const purchaseParamsSchema = z.object({
   slug: z.string().min(1),
@@ -237,7 +238,7 @@ export default function PurchaseConfirmation({
           <div className="mt-6 flex flex-wrap gap-6 border-t pt-6 text-sm text-muted-foreground">
             <span className="flex items-center gap-2">
               <BookOpen className="size-4" />
-              {lessonCount} {lessonCount === 1 ? "lesson" : "lessons"}
+              {pluralize(lessonCount, "lesson")}
             </span>
             <span className="flex items-center gap-2">
               <Clock className="size-4" />
@@ -245,8 +246,7 @@ export default function PurchaseConfirmation({
             </span>
             <span className="flex items-center gap-2">
               <Users className="size-4" />
-              {enrollmentCount} {enrollmentCount === 1 ? "student" : "students"}{" "}
-              enrolled
+              {pluralize(enrollmentCount, "student")} enrolled
             </span>
           </div>
 
@@ -358,8 +358,8 @@ export default function PurchaseConfirmation({
                     {/* Price breakdown */}
                     <div>
                       <div className="text-sm text-muted-foreground">
-                        {formatPrice(pppPrice)} &times; {quantity}{" "}
-                        {quantity === 1 ? "seat" : "seats"}
+                        {formatPrice(pppPrice)} &times;{" "}
+                        {pluralize(quantity, "seat")}
                       </div>
                       <div className="text-3xl font-bold">
                         {formatPrice(teamTotal)}
@@ -367,10 +367,10 @@ export default function PurchaseConfirmation({
                     </div>
 
                     <p className="text-sm text-muted-foreground">
-                      You&apos;ll receive {quantity} unique coupon{" "}
-                      {quantity === 1 ? "link" : "links"} to share with your
-                      team members. Each link grants one person access to this
-                      course.
+                      You&apos;ll receive{" "}
+                      {pluralize(quantity, "unique coupon link")} to share with
+                      your team members. Each link grants one person access to
+                      this course.
                     </p>
 
                     <div className="flex items-center gap-3">
@@ -387,7 +387,7 @@ export default function PurchaseConfirmation({
                         <Button size="lg" disabled={isSubmitting}>
                           {isSubmitting
                             ? "Processing..."
-                            : `Buy ${quantity} ${quantity === 1 ? "Seat" : "Seats"}`}
+                            : `Buy ${pluralize(quantity, "Seat")}`}
                         </Button>
                       </fetcher.Form>
                     </div>

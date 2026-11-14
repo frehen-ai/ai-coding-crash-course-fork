@@ -26,6 +26,7 @@ import {
 import { data, isRouteErrorResponse } from "react-router";
 import { formatDuration } from "~/lib/utils";
 import { z } from "zod";
+import { pluralize } from "~/lib/pluralize";
 
 const paramsSchema = z.object({
   slug: z.string().min(1),
@@ -177,7 +178,7 @@ export default function ModuleDetail({ loaderData }: Route.ComponentProps) {
       <div className="mb-6 flex items-center gap-4 text-sm text-muted-foreground">
         <span className="flex items-center gap-1">
           <BookOpen className="size-4" />
-          {totalLessons} {totalLessons === 1 ? "lesson" : "lessons"}
+          {pluralize(totalLessons, "lesson")}
         </span>
         {totalDuration > 0 && (
           <span className="flex items-center gap-1">
@@ -192,7 +193,8 @@ export default function ModuleDetail({ loaderData }: Route.ComponentProps) {
         <div className="mb-6">
           <div className="mb-1 flex items-center justify-between text-sm">
             <span className="text-muted-foreground">
-              {completedLessons} of {totalLessons} lessons completed
+              {completedLessons} of {pluralize(totalLessons, "lesson")}{" "}
+              completed
             </span>
             <span className="font-medium">{moduleProgress}%</span>
           </div>

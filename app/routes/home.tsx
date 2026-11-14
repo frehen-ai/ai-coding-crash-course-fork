@@ -12,6 +12,7 @@ import { DevUI } from "~/components/dev-ui";
 import { getAllUsers, getUserById } from "~/services/userService";
 import { getCurrentUserId, getDevCountry } from "~/lib/session";
 import { getCountryTierInfo, COUNTRIES } from "~/lib/ppp";
+import { pluralize } from "~/lib/pluralize";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -194,7 +195,7 @@ export default function Home({ loaderData }: Route.ComponentProps) {
                     </span>
                     <span className="flex items-center gap-1">
                       <BookOpen className="size-3" />
-                      {course.lessonCount} lessons
+                      {pluralize(course.lessonCount, "lesson")}
                     </span>
                   </CardFooter>
                 </Card>

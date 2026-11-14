@@ -17,6 +17,7 @@ import { resolveCountry } from "~/lib/country.server";
 import { calculatePppPrice } from "~/lib/ppp";
 import { getCourseRatingSummaries } from "~/services/courseRatingService";
 import { StarRating } from "~/components/star-rating";
+import { pluralize } from "~/lib/pluralize";
 
 export function meta() {
   return [
@@ -226,7 +227,8 @@ export default function CourseCatalog({ loaderData }: Route.ComponentProps) {
                   <CardContent className="pt-0">
                     <div className="mb-1 flex items-center justify-between text-xs">
                       <span className="text-muted-foreground">
-                        {course.completedLessons} / {course.lessonCount} lessons
+                        {course.completedLessons} /{" "}
+                        {pluralize(course.lessonCount, "lesson")}
                       </span>
                       <span className="font-medium">{course.progress}%</span>
                     </div>
