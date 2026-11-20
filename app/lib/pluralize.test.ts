@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { pluralize } from "./pluralize";
+import { pluralize, pluralizeWords } from "./pluralize";
 
 describe("pluralize", () => {
   it("uses the singular for a count of 1", () => {
@@ -38,5 +38,37 @@ describe("pluralize thousands separators", () => {
 
   it("separates every group of thousands", () => {
     expect(pluralize(1234567, "lesson")).toBe("1,234,567 lessons");
+  });
+});
+
+describe("pluralizeWords", () => {
+  it("writes zero as a word with the plural", () => {
+    expect(pluralizeWords(0, "item")).toBe("zero items");
+  });
+
+  it("writes one as a word with the singular", () => {
+    expect(pluralizeWords(1, "item")).toBe("one item");
+  });
+
+  it("writes counts up to ten as words", () => {
+    expect(pluralizeWords(3, "item")).toBe("three items");
+    expect(pluralizeWords(10, "item")).toBe("ten items");
+  });
+
+  it("uses the given plural", () => {
+    expect(pluralizeWords(2, "person", "people")).toBe("two people");
+  });
+
+  it("falls back to digits above ten", () => {
+    expect(pluralizeWords(11, "item")).toBe("11 items");
+    expect(pluralizeWords(1000, "person", "people")).toBe("1,000 people");
+  });
+
+  it("falls back to digits for non-integers", () => {
+    expect(pluralizeWords(2.5, "item")).toBe("2.5 items");
+  });
+
+  it("falls back to digits for negative counts", () => {
+    expect(pluralizeWords(-1, "item")).toBe("-1 items");
   });
 });
